@@ -43,3 +43,7 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return u'{0.timestamp:%Y/%m/%d %H:%M} - {0.user}'.format(self)
+
+    def read(self):
+        self.active = False
+        self.save()
