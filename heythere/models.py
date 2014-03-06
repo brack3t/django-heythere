@@ -26,6 +26,9 @@ class NotificationManager(models.Manager):
         for notification in notifications:
             notification.read()
 
+    def unread(self, user):
+        return self.model.objects.filter(user=user, active=True)
+
 
 class Notification(models.Model):
     """

@@ -41,4 +41,7 @@ class TestNotificationModel(test.TestCase):
         self._create_notification()
         self._create_notification()
 
-        self.assertEqual(self.user.notifications.count(), 5)
+        self.assertEqual(self.user.notifications.unread(self.user).count(), 5)
+
+        Notification.objects.clear_all(self.user)
+        self.assertEqual(self.user.notifications.unread(self.user).count(), 0)
