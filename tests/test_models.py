@@ -33,3 +33,12 @@ class TestNotificationModel(test.TestCase):
         self.assertTrue(notification.active)
         notification.read()
         self.assertFalse(notification.active)
+
+    def test_mark_all_as_read(self):
+        self._create_notification()
+        self._create_notification()
+        self._create_notification()
+        self._create_notification()
+        self._create_notification()
+
+        self.assertEqual(self.user.notifications.count(), 5)

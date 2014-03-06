@@ -20,6 +20,12 @@ class NotificationManager(models.Manager):
         notification.save()
         return notification
 
+    def clear_all(self, user):
+        notifications = self.model.objects.select_for_update().filter(
+            user=user)
+        for notification in notifications:
+            notification.read()
+
 
 class Notification(models.Model):
     """
