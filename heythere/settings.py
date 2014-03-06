@@ -5,7 +5,7 @@ BASIC_NOTIFICATIONS = {
         'persistant': True,  # stays until dismissed
         'send_onsite': True,  # send as message on site
         'send_email': False,  # send as email
-        'headline_template': '{{title}}',  # Django template for headline
+        'headline_template': '{{headline}}',  # Django template for headline
         'body_template': '{{body}}'  # Django template for body
     }
 }
