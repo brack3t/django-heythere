@@ -58,11 +58,14 @@ class NotificationManager(models.Manager):
             sent_at__isnull=True)
         emails = [note.mail_tuple for note in
                   notifications if note.send_as_email]
-        send_mass_mail(*emails, fail_silently=fail_silently)
+        send_mass_mail(emails, fail_silently=fail_silently)
 
         for note in notifications:
             note.sent_at = now()
             note.save()
+
+    def all_unsent(self):
+        return self.get_query_set().unsent()
 
     def unread(self, user):
         return self.get_query_set().for_user(user).unread()

@@ -113,6 +113,18 @@ class TestNotificationModel(test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
     @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
+    def test_sending_all_unread(self):
+        self._create_notification('TEMPORARY')
+        self._create_notification('TEMPORARY')
+        self._create_notification('TEMPORARY')
+        self._create_notification('TEMPORARY')
+        self._create_notification('TEMPORARY')
+
+        Notification.objects.send_all_new()
+        self.assertEqual(Notification.objects.all_unsent().count(), 0)
+        self.assertEqual(len(mail.outbox), 5)
+
+    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     @override_settings(AUTH_USER_MODEL='tests.CustomUser')
     def test_change_email_field(self):
         self.assertIn(
