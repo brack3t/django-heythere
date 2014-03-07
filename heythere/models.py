@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from django.conf import settings as django_settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail
 from django.db import models
 from django.utils.functional import lazy
 from django.utils.timezone import now
@@ -53,6 +53,17 @@ class NotificationManager(models.Manager):
         for notification in notifications:
             notification.read()
 
+    def send_all_new(self, fail_silently=False):
+        notifications = self.model.objects.select_for_update().filter(
+            sent_at__isnull=True)
+        emails = [note.mail_tuple for note in
+                  notifications if note.send_as_email]
+        send_mass_mail(*emails, fail_silently=fail_silently)
+
+        for note in notifications:
+            note.sent_at = now()
+            note.save()
+
     def unread(self, user):
         return self.get_query_set().for_user(user).unread()
 
@@ -95,7 +106,7 @@ class Notification(models.Model):
         return u'{0.timestamp:%Y/%m/%d %H:%M} - {0.user}'.format(self)
 
     def save(self, *args, **kwargs):
-        if not self.notification.get('persistant', True) and self.sent_at:
+        if not self.persistant and self.sent_at:
             self.active = False
         return super(Notification, self).save(*args, **kwargs)
 
@@ -110,20 +121,28 @@ class Notification(models.Model):
         else:
             return notification
 
+    @property
+    def mail_tuple(self):
+        return (self.headline, self.body,
+                getattr(django_settings, 'DEFAULT_FROM_EMAIL'),
+                [getattr(self.user,
+                         getattr(self.notification, 'email_field', 'email'))],
+                )
+
+    @property
+    def persistant(self):
+        return self.notification.get('persistant', True)
+
+    @property
+    def send_as_email(self):
+        return self.notification.get('send_as_email', False)
+
     def read(self):
         self.active = False
         self.save()
 
-    def send(self):
-        if self.notification.get('send_email'):
-            address = getattr(self.user,
-                              self.notification.get('email_field', 'email'))
-            send_mail(
-                self.headline,
-                self.body,
-                getattr(django_settings, 'DEFAULT_FROM_EMAIL'),
-                [address],
-                fail_silently=False
-            )
+    def send_email(self, fail_silently=False):
+        if self.send_as_email:
+            send_mail(*self.mail_tuple, fail_silently=fail_silently)
             self.sent_at = now()
             self.save()

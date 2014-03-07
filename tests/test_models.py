@@ -13,7 +13,7 @@ TEST_NOTIFICATIONS = {
     'CUSTOM_USER': {
         'persistant': True,
         'send_onsite': True,
-        'send_email': False,
+        'send_as_email': False,
         'headline_template': 'My headline: {{headline}}',
         'body_template': 'My body: {{body}}',
         'email_field': 'contact'
@@ -21,14 +21,14 @@ TEST_NOTIFICATIONS = {
     'TEMPORARY': {
         'persistant': False,
         'send_onsite': True,
-        'send_email': True,
+        'send_as_email': True,
         'headline_template': 'My headline: {{headline}}',
         'body_template': 'My body: {{body}}',
     },
     'SEND_EMAIL': {
         'persistant': True,
         'send_onsite': False,
-        'send_email': True,
+        'send_as_email': True,
         'headline_template': 'My headline: {{headline}}',
         'body_template': 'My body: {{body}}',
     }
@@ -37,7 +37,8 @@ TEST_NOTIFICATIONS = {
 
 class TestNotificationModel(test.TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('testuser')
+        self.user = User.objects.create_user('testuser',
+                                             email='test@example.com')
 
     def _create_notification(self, notification_type=None):
         notification_type = notification_type or (
@@ -93,7 +94,7 @@ class TestNotificationModel(test.TestCase):
     @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     def test_sending(self):
         self._create_notification('SEND_EMAIL')
-        self.user.notifications.unsent(self.user).first().send()
+        self.user.notifications.unsent(self.user).first().send_email()
         self.assertEqual(self.user.notifications.unsent(self.user).count(), 0)
         self.assertEqual(self.user.notifications.sent(self.user).count(), 1)
         self.assertEqual(len(mail.outbox), 1)
@@ -107,7 +108,7 @@ class TestNotificationModel(test.TestCase):
     @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     def test_sending_unmarks_active(self):
         self._create_notification('TEMPORARY')
-        self.user.notifications.unsent(self.user).first().send()
+        self.user.notifications.unsent(self.user).first().send_email()
         self.assertEqual(Notification.objects.unread(self.user).count(), 0)
         self.assertEqual(len(mail.outbox), 1)
 
