@@ -58,6 +58,8 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 import django
 if django.VERSION < (1, 4):
     TEMPLATE_CONTEXT_PROCESSORS.remove('django.core.context_processors.tz')

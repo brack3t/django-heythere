@@ -7,12 +7,9 @@ BASIC_NOTIFICATIONS = {
         'send_email': False,  # send as email
         'headline_template': '{{headline}}',  # Django template for headline
         'body_template': '{{body}}',  # Django template for body
-        'email_field': 'email'
+        'email_field': 'email'  # Assume field named 'email' is user's email
     }
 }
-
-# NOTIFICATIONS = getattr(
-#    django_settings, 'NOTIFICATIONS', BASIC_NOTIFICATIONS)
 
 
 def get_notifications():
