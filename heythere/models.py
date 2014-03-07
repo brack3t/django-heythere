@@ -4,24 +4,21 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import lazy
 
-# from .settings import NOTIFICATIONS
 from .utils import render
-
-# NOTIFICATION_TYPES = [(key, key.lower().capitalize())
-#                       for key in NOTIFICATIONS.keys()]
 
 
 def get_notification_types():
     from .settings import get_notifications
-    return [(key, key.lower().capitalize()) for key in get_notifications().keys()]
+    return [(key, key.lower().capitalize())
+            for key in get_notifications().keys()]
 
 
 class NotificationManager(models.Manager):
     def create_notification(self, user, notification_type, headline, body):
-        from .settings import NOTIFICATIONS
+        from .settings import get_notifications
         notification = self.model(
             user=user, notification_type=notification_type)
-        note = NOTIFICATIONS[notification_type]
+        note = get_notifications()[notification_type]
         notification.headline = render(note['headline_template'], headline)
         notification.body = render(note['body_template'], body)
         notification.save()

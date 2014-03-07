@@ -60,8 +60,18 @@ class TestNotificationModel(test.TestCase):
         Notification.objects.clear_all(self.user)
         self.assertEqual(self.user.notifications.unread(self.user).count(), 0)
 
-    @override_settings(AUTH_USER_MODEL='tests.CustomUser')
     @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
+    @override_settings(AUTH_USER_MODEL='tests.CustomUser')
     def test_change_email_field(self):
-        notification = self._create_notification('CUSTOM_USER')
+        self.assertIn(
+            ('CUSTOM_USER', 'Custom_user'),
+            Notification()._meta.get_field_by_name(
+                'notification_type')[0].get_choices())
+        notification = Notification.objects.create_notification(
+            user=self.user,
+            notification_type='CUSTOM_USER',
+            headline={'headline': 'This is a notification'},
+            body={'body': 'This is the body'}
+        )
+        # notification = self._create_notification('CUSTOM_USER')
         self.assertIn('My body:', notification.body)
