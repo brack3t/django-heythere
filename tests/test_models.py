@@ -4,6 +4,7 @@ import pytest
 
 from django import test
 from django.contrib.auth.models import User
+from django.core import mail
 from django.test.utils import override_settings
 
 from heythere.models import Notification, get_notification_types
@@ -95,8 +96,9 @@ class TestNotificationModel(test.TestCase):
         self.user.notifications.unsent(self.user).first().send()
         self.assertEqual(self.user.notifications.unsent(self.user).count(), 0)
         self.assertEqual(self.user.notifications.sent(self.user).count(), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
-    def test_something(self):
+    def test_bad_notification_type(self):
         notification = Notification()
         notification.notification_type = 'BAD_TYPE'
         with pytest.raises(KeyError):
@@ -107,6 +109,7 @@ class TestNotificationModel(test.TestCase):
         self._create_notification('TEMPORARY')
         self.user.notifications.unsent(self.user).first().send()
         self.assertEqual(Notification.objects.unread(self.user).count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
 
     @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     @override_settings(AUTH_USER_MODEL='tests.CustomUser')
