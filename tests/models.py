@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
 
@@ -19,3 +20,17 @@ class CanonicalArticle(models.Model):
             return "{0.author.username}-{0.slug}".format(self)
         return "unauthored-{0.slug}".format(self)
 
+
+class CustomUser(AbstractBaseUser):
+    contact = models.EmailField(max_length=255, unique=True)
+
+    USERNAME_FIELD = 'contact'
+
+    def get_short_name(self):
+        return self.contact
+
+    def get_full_name(self):
+        return self.get_short_name()
+
+    def __unicode__(self):
+        return self.contact

@@ -2,18 +2,32 @@ from __future__ import absolute_import
 
 from django import test
 from django.contrib.auth.models import User
+from django.test.utils import override_settings
 
-from heythere.models import Notification, NOTIFICATION_TYPES
+from heythere.models import Notification, get_notification_types
+
+TEST_NOTIFICATIONS = {
+    'CUSTOM_USER': {
+        'persistant': True,
+        'send_onsite': True,
+        'send_email': False,
+        'headline_template': 'My headline: {{headline}}',
+        'body_template': 'My body: {{body}}',
+        'email_field': 'contact'
+    }
+}
 
 
 class TestNotificationModel(test.TestCase):
     def setUp(self):
         self.user = User.objects.create_user('testuser')
 
-    def _create_notification(self):
+    def _create_notification(self, notification_type=None):
+        notification_type = notification_type or (
+            get_notification_types()[0][0])
         notification = Notification.objects.create_notification(
             user=self.user,
-            notification_type=NOTIFICATION_TYPES[0][0],
+            notification_type=notification_type,
             headline={'headline': 'This is a notification'},
             body={'body': 'This is the body'}
         )
@@ -45,3 +59,9 @@ class TestNotificationModel(test.TestCase):
 
         Notification.objects.clear_all(self.user)
         self.assertEqual(self.user.notifications.unread(self.user).count(), 0)
+
+    @override_settings(AUTH_USER_MODEL='tests.CustomUser')
+    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
+    def test_change_email_field(self):
+        notification = self._create_notification('CUSTOM_USER')
+        self.assertIn('My body:', notification.body)
