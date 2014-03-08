@@ -38,10 +38,11 @@ class NotificationManager(models.Manager):
 
     def create_notification(self, user, notification_type, headline, body):
         notification = self.model(
-            user=user, notification_type=notification_type)
-        note = get_notifications()[notification_type]
-        notification.headline = render(note['headline_template'], headline)
-        notification.body = render(note['body_template'], body)
+            user=user,
+            notification_type=notification_type,
+            headline_dict=headline,
+            body_dict=body
+        )
         notification.save()
         return notification
 
@@ -93,6 +94,8 @@ class Notification(models.Model):
     user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
                              related_name='notifications')
     notification_type = models.CharField(max_length=100)
+    headline_dict = models.TextField(blank=True)
+    body_dict = models.TextField(blank=True)
     headline = models.TextField(blank=True)
     body = models.TextField(blank=True)
     objects = NotificationManager()
@@ -109,6 +112,9 @@ class Notification(models.Model):
         return u'{0.timestamp:%Y/%m/%d %H:%M} - {0.user}'.format(self)
 
     def save(self, *args, **kwargs):
+        self.headline = render(
+            self.notification['headline_template'], self.headline_dict)
+        self.body = render(self.notification['body_template'], self.body_dict)
         if not self.persistant and self.sent_at:
             self.active = False
         return super(Notification, self).save(*args, **kwargs)

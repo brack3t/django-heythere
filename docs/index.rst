@@ -71,6 +71,7 @@ Along with those configuration options, the ``Notificiation`` object has a few s
 - ``user`` is the user object that should recieve the notification.
 - ``notification_type`` is the key in your ``NOTIFICATIONS`` dict for the type of notification you want to send.
 - ``headline`` and ``body`` are dictionaries of variables that you want to parse for the ``headline_template`` and ``body_template``.
+They will be stored in ``headline_dict`` and ``body_dict``, respectively, on the model instance.
 
 .. _clear_all:
 
