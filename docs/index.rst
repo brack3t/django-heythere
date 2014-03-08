@@ -12,6 +12,12 @@ users (even those with email fields not named ``email``) and supports any
 email backend that Django does. It doesn't require you to send emails to
 users, either, if that's not your thing.
 
+**WARNING**
+
+This software is currently in beta and may not work exactly how it should. All
+tests are passing and test coverage is high, but I take no responsibility for
+how you use this software or any effect it might have on your systems.
+
 .. _installation:
 
 Installation
@@ -71,7 +77,7 @@ Along with those configuration options, the ``Notificiation`` object has a few s
 - ``user`` is the user object that should recieve the notification.
 - ``notification_type`` is the key in your ``NOTIFICATIONS`` dict for the type of notification you want to send.
 - ``headline`` and ``body`` are dictionaries of variables that you want to parse for the ``headline_template`` and ``body_template``.
-They will be stored in ``headline_dict`` and ``body_dict``, respectively, on the model instance.
+  They will be stored in ``headline_dict`` and ``body_dict``, respectively, on the model instance.
 
 .. _clear_all:
 
