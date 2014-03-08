@@ -60,6 +60,38 @@ PASSWORD_HASHERS = (
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+NOTIFICATIONS = {
+    'DEFAULT': {
+        'persistant': True,  # stays until dismissed
+        'send_as_email': False,  # send as email
+        'headline_template': '{{headline}}',  # Django template for headline
+        'body_template': '{{body}}',  # Django template for body
+        'email_field': 'email'  # Assume field named 'email' is user's email
+    },
+    'CUSTOM_USER': {
+        'persistant': True,
+        'send_onsite': True,
+        'send_as_email': False,
+        'headline_template': 'My headline: {{headline}}',
+        'body_template': 'My body: {{body}}',
+        'email_field': 'contact'
+    },
+    'TEMPORARY': {
+        'persistant': False,
+        'send_onsite': True,
+        'send_as_email': True,
+        'headline_template': 'My headline: {{headline}}',
+        'body_template': 'My body: {{body}}',
+    },
+    'SEND_EMAIL': {
+        'persistant': True,
+        'send_onsite': False,
+        'send_as_email': True,
+        'headline_template': 'My headline: {{headline}}',
+        'body_template': 'My body: {{body}}',
+    }
+}
+
 import django
 if django.VERSION < (1, 4):
     TEMPLATE_CONTEXT_PROCESSORS.remove('django.core.context_processors.tz')

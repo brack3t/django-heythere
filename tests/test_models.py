@@ -9,31 +9,6 @@ from django.test.utils import override_settings
 
 from heythere.models import Notification, get_notification_types
 
-TEST_NOTIFICATIONS = {
-    'CUSTOM_USER': {
-        'persistant': True,
-        'send_onsite': True,
-        'send_as_email': False,
-        'headline_template': 'My headline: {{headline}}',
-        'body_template': 'My body: {{body}}',
-        'email_field': 'contact'
-    },
-    'TEMPORARY': {
-        'persistant': False,
-        'send_onsite': True,
-        'send_as_email': True,
-        'headline_template': 'My headline: {{headline}}',
-        'body_template': 'My body: {{body}}',
-    },
-    'SEND_EMAIL': {
-        'persistant': True,
-        'send_onsite': False,
-        'send_as_email': True,
-        'headline_template': 'My headline: {{headline}}',
-        'body_template': 'My body: {{body}}',
-    }
-}
-
 
 class TestNotificationModel(test.TestCase):
     def setUp(self):
@@ -91,7 +66,6 @@ class TestNotificationModel(test.TestCase):
         self._create_notification()
         self.assertEqual(self.user.notifications.unsent(self.user).count(), 1)
 
-    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     def test_sending(self):
         self._create_notification('SEND_EMAIL')
         self.user.notifications.unsent(self.user).first().send_email()
@@ -105,14 +79,12 @@ class TestNotificationModel(test.TestCase):
         with pytest.raises(KeyError):
             notification.notification
 
-    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     def test_sending_unmarks_active(self):
         self._create_notification('TEMPORARY')
         self.user.notifications.unsent(self.user).first().send_email()
         self.assertEqual(Notification.objects.unread(self.user).count(), 0)
         self.assertEqual(len(mail.outbox), 1)
 
-    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     def test_sending_all_unread(self):
         self._create_notification('TEMPORARY')
         self._create_notification('TEMPORARY')
@@ -124,7 +96,6 @@ class TestNotificationModel(test.TestCase):
         self.assertEqual(Notification.objects.all_unsent().count(), 0)
         self.assertEqual(len(mail.outbox), 5)
 
-    @override_settings(NOTIFICATIONS=TEST_NOTIFICATIONS)
     @override_settings(AUTH_USER_MODEL='tests.CustomUser')
     def test_change_email_field(self):
         self.assertIn(
