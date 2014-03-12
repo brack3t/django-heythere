@@ -12,11 +12,11 @@ users (even those with email fields not named ``email``) and supports any
 email backend that Django does. It doesn't require you to send emails to
 users, either, if that's not your thing.
 
-**WARNING**
-
-This software is currently in beta and may not work exactly how it should. All
-tests are passing and test coverage is high, but I take no responsibility for
-how you use this software or any effect it might have on your systems.
+.. warning:: 
+   This software is currently in beta and may not work exactly how 
+   it should. All tests are passing and test coverage is high, but I take no
+   responsibility for how you use this software or any effect it might have
+   on your systems.
 
 .. _installation:
 
@@ -24,8 +24,8 @@ Installation
 ------------
 
 1. ``pip install django-heythere`` or download from
-`github <https://github.com/brack3t/django-heythere>`_ and run
-``python setup.py install``.
+   `github <https://github.com/brack3t/django-heythere>`_ and run
+   ``python setup.py install``.
 2. Add ``'heythere'`` to your ``INSTALLED_PACKAGES`` in ``settings.py``.
 3. **OPTIONAL** Set up your special `configuration`_.
 4. ``python manage.py syncdb``
