@@ -6,3 +6,7 @@ local_settings.py
 .coverage
 htmlcov
 docs/_build/
+build/
+dist/
+.tox/
+.coverage

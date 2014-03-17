@@ -1,0 +1,12 @@
+# django-heythere coverage config file
+[run]
+branch = true
+
+[report]
+omit =
+    *site-packages*
+    *tests*
+    *.tox*
+    *conftest*
+    *__init__*
+show_missing = True
