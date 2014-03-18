@@ -106,6 +106,18 @@ If they're marked as being non-persistent, they'll be marked as no longer active
 
 ``notification.send_email()`` sends a ``Notification`` instance to its user.
 
+Admin and Management
+--------------------
+
+There is a basic admin provided with the app that provides a new **action** and
+**button** on the changelist page. The button sends all unsent notifications
+as email (assuming the notification type allows that) and the action does the
+same for whichever notifications have been selected.
+
+There is also a **management command** to send all unsent notifications (again,
+ignoring those whose notification type doesn't allow them to be sent). You can
+run this command with ``./manage.py send_unsent_notifications``.
+
 
 Indices and tables
 ==================

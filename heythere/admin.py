@@ -7,6 +7,7 @@ from django.conf.urls import patterns, url
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Notification, get_notification_types
 
@@ -34,15 +35,15 @@ class NotificationAdmin(admin.ModelAdmin):
         return bool(obj.sent_at)
     sent.boolean = True
 
-    def send_all_unsent(self, request):
+    def handle_sending_all_unsent(self, request):
         notifications = Notification.objects.all_unsent()
 
         if request.method == 'POST' and request.POST.get('post') == 'yes':
             Notification.objects.send_all_unsent()
             self.message_user(
                 request,
-                'Successfully sent {0} notifications'.format(
-                    notifications.count()))
+                _(u'Successfully tried to send {0} notifications'.format(
+                    notifications.count())))
             return redirect('admin:heythere_notification_changelist')
 
         return TemplateResponse(request, 'admin/send_all_unsent.html', {
@@ -51,6 +52,24 @@ class NotificationAdmin(admin.ModelAdmin):
             'notifications': notifications
         })
 
+    def send_selected(self, request, queryset):
+        if request.POST.get('post'):
+            for notification in queryset:
+                notification.send_email()
+            self.message_user(
+                request,
+                _(u'Successfully tried to send {0} notifications'.format(
+                    len(queryset))))
+            return redirect('admin:heythere_notification_changelist')
+        return TemplateResponse(request, 'admin/send_selected.html', {
+            'current_app': self.admin_site.name,
+            'opts': self.opts,
+            'action_checkbox_name': admin.ACTION_CHECKBOX_NAME,
+            'queryset': queryset
+        })
+    send_selected.short_description = _(u'Send selected notifications')
+
+    actions = ['send_selected']
     fieldsets = (
         (None, {
             'fields': (
@@ -59,7 +78,7 @@ class NotificationAdmin(admin.ModelAdmin):
                 'body', 'body_dict'
             )
         }),
-        ('Details', {
+        (_(u'Details'), {
             'fields': ('active', 'sent_at')
         })
     )
@@ -70,7 +89,7 @@ class NotificationAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         admin_send_all_unsent = self.admin_site.admin_view(
-            self.send_all_unsent)
+            self.handle_sending_all_unsent)
         return patterns(
             '',
             url(r'^send_all_unsent/$', admin_send_all_unsent,
