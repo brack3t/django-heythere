@@ -7,21 +7,20 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.test.utils import override_settings
 
-from heythere.models import Notification, get_notification_types
+from heythere.models import Notification
 
 
 class TestNotificationModel(test.TestCase):
     def setUp(self):
         self.user = User.objects.create_user('testuser',
                                              email='test@example.com')
+        self.headline = 'This is a notification'
 
-    def _create_notification(self, notification_type=None):
-        notification_type = notification_type or (
-            get_notification_types()[0][0])
+    def _create_notification(self, notification_type='DEFAULT'):
         notification = Notification.objects.create_notification(
             user=self.user,
             notification_type=notification_type,
-            headline={'headline': 'This is a notification'},
+            headline={'headline': self.headline},
             body={'body': 'This is the body'}
         )
         return notification
@@ -31,9 +30,7 @@ class TestNotificationModel(test.TestCase):
 
         self.assertTrue(notification.active)
         self.assertEqual(notification.user, self.user)
-        self.assertEqual(notification.headline, 'This is a notification')
-        self.assertIn(notification.user.__unicode__(),
-                      notification.__unicode__())
+        self.assertEqual(notification.headline, self.headline)
 
     def test_all_of_a_users_notifications(self):
         self._create_notification()
@@ -68,7 +65,10 @@ class TestNotificationModel(test.TestCase):
 
     def test_sending(self):
         self._create_notification('SEND_EMAIL')
-        self.user.notifications.unsent(self.user).first().send_email()
+        try:
+            self.user.notifications.unsent(self.user).first().send_email()
+        except AttributeError:
+            self.user.notifications.unsent(self.user).all()[0].send_email()
         self.assertEqual(self.user.notifications.unsent(self.user).count(), 0)
         self.assertEqual(self.user.notifications.sent(self.user).count(), 1)
         self.assertEqual(len(mail.outbox), 1)
@@ -77,11 +77,14 @@ class TestNotificationModel(test.TestCase):
         notification = Notification()
         notification.notification_type = 'BAD_TYPE'
         with pytest.raises(KeyError):
-            notification.notification
+            notification.notification_dict
 
     def test_sending_unmarks_active(self):
         self._create_notification('TEMPORARY')
-        self.user.notifications.unsent(self.user).first().send_email()
+        try:
+            self.user.notifications.unsent(self.user).first().send_email()
+        except AttributeError:
+            self.user.notifications.unsent(self.user).all()[0].send_email()
         self.assertEqual(Notification.objects.unread(self.user).count(), 0)
         self.assertEqual(len(mail.outbox), 1)
 

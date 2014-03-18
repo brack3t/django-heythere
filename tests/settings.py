@@ -91,10 +91,3 @@ NOTIFICATIONS = {
         'body_template': 'My body: {{body}}',
     }
 }
-
-import django
-if django.VERSION < (1, 4):
-    TEMPLATE_CONTEXT_PROCESSORS.remove('django.core.context_processors.tz')
-    MIDDLEWARE_CLASSES.remove(
-        'django.middleware.clickjacking.XFrameOptionsMiddleware'
-    )

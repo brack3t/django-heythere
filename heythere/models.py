@@ -93,7 +93,7 @@ class Notification(models.Model):
     active = models.BooleanField(default=True)
     user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
                              related_name='notifications')
-    notification_type = models.CharField(max_length=100)
+    notification_type = models.CharField(max_length=100, default=u'DEFAULT')
     headline_dict = models.TextField(blank=True)
     body_dict = models.TextField(blank=True)
     headline = models.TextField(blank=True)
@@ -113,18 +113,19 @@ class Notification(models.Model):
 
     def save(self, *args, **kwargs):
         self.headline = render(
-            self.notification['headline_template'], self.headline_dict)
-        self.body = render(self.notification['body_template'], self.body_dict)
+            self.notification_dict['headline_template'], self.headline_dict)
+        self.body = render(self.notification_dict['body_template'],
+                           self.body_dict)
         if not self.persistant and self.sent_at:
             self.active = False
         return super(Notification, self).save(*args, **kwargs)
 
     @property
-    def notification(self):
+    def notification_dict(self):
         try:
             notification = get_notifications()[self.notification_type]
         except KeyError:
-            message = "The notification type {0} doesn't exist.".format(
+            message = u"The notification type {0} doesn't exist.".format(
                 self.notification_type)
             raise KeyError(message)
         else:
@@ -133,18 +134,19 @@ class Notification(models.Model):
     @property
     def mail_tuple(self):
         return (self.headline, self.body,
-                getattr(django_settings, 'DEFAULT_FROM_EMAIL'),
+                getattr(django_settings, u'DEFAULT_FROM_EMAIL'),
                 [getattr(self.user,
-                         getattr(self.notification, 'email_field', 'email'))],
+                         getattr(self.notification_dict, u'email_field',
+                                 u'email'))],
                 )
 
     @property
     def persistant(self):
-        return self.notification.get('persistant', True)
+        return self.notification_dict.get(u'persistant', True)
 
     @property
     def send_as_email(self):
-        return self.notification.get('send_as_email', False)
+        return self.notification_dict.get(u'send_as_email', False)
 
     def read(self):
         self.active = False
