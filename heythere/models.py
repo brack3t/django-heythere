@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import ast
+
 from django.conf import settings as django_settings
 from django.core.mail import send_mail, send_mass_mail
 from django.db import models
@@ -55,7 +57,7 @@ class NotificationManager(models.Manager):
             notification.read()
 
     def send_all_new(self, fail_silently=False):
-        notifications = self.model.objects.select_for_update().unsent()
+        notifications = self.model.objects.all_unsent()
         emails = [note.mail_tuple for note in
                   notifications if note.send_as_email]
         send_mass_mail(emails, fail_silently=fail_silently)
@@ -111,13 +113,24 @@ class Notification(models.Model):
         return u'{0.timestamp:%Y/%m/%d %H:%M} - {0.user}'.format(self)
 
     def save(self, *args, **kwargs):
+        if not hasattr(self.headline_dict, 'keys'):
+            headline_dict = ast.literal_eval(self.headline_dict)
+            body_dict = ast.literal_eval(self.body_dict)
+        else:
+            headline_dict = self.headline_dict
+            body_dict = self.body_dict
+
         self.headline = render(
-            self.notification_dict['headline_template'], self.headline_dict)
-        self.body = render(self.notification_dict['body_template'],
-                           self.body_dict)
+            self.notification_dict['headline_template'],
+            headline_dict
+        )
+        self.body = render(
+            self.notification_dict['body_template'],
+            body_dict
+        )
         if not self.persistant and self.sent_at:
             self.active = False
-        return super(Notification, self).save(*args, **kwargs)
+        super(Notification, self).save(*args, **kwargs)
 
     @property
     def notification_dict(self):
