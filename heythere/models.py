@@ -55,8 +55,7 @@ class NotificationManager(models.Manager):
             notification.read()
 
     def send_all_new(self, fail_silently=False):
-        notifications = self.model.objects.select_for_update().filter(
-            sent_at__isnull=True)
+        notifications = self.model.objects.select_for_update().unsent()
         emails = [note.mail_tuple for note in
                   notifications if note.send_as_email]
         send_mass_mail(emails, fail_silently=fail_silently)
