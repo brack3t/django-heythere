@@ -128,7 +128,7 @@ class Notification(models.Model):
             self.notification_dict['body_template'],
             body_dict
         )
-        if not self.persistant and self.sent_at:
+        if not self.persistent and self.sent_at:
             self.active = False
         super(Notification, self).save(*args, **kwargs)
 
@@ -153,8 +153,8 @@ class Notification(models.Model):
                 )
 
     @property
-    def persistant(self):
-        return self.notification_dict.get(u'persistant', True)
+    def persistent(self):
+        return self.notification_dict.get(u'persistent', True)
 
     @property
     def send_as_email(self):

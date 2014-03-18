@@ -62,14 +62,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 NOTIFICATIONS = {
     'DEFAULT': {
-        'persistant': True,  # stays until dismissed
+        'persistent': True,  # stays until dismissed
         'send_as_email': False,  # send as email
         'headline_template': '{{headline}}',  # Django template for headline
         'body_template': '{{body}}',  # Django template for body
         'email_field': 'email'  # Assume field named 'email' is user's email
     },
     'CUSTOM_USER': {
-        'persistant': True,
+        'persistent': True,
         'send_onsite': True,
         'send_as_email': False,
         'headline_template': 'My headline: {{headline}}',
@@ -77,14 +77,14 @@ NOTIFICATIONS = {
         'email_field': 'contact'
     },
     'TEMPORARY': {
-        'persistant': False,
+        'persistent': False,
         'send_onsite': True,
         'send_as_email': True,
         'headline_template': 'My headline: {{headline}}',
         'body_template': 'My body: {{body}}',
     },
     'SEND_EMAIL': {
-        'persistant': True,
+        'persistent': True,
         'send_onsite': False,
         'send_as_email': True,
         'headline_template': 'My headline: {{headline}}',

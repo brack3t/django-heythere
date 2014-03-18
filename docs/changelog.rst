@@ -4,6 +4,8 @@
 Changelog
 =========
 
+* :release:`1.0.1 <2014-03-18>`
+* :bug:`-` Misspelled ``persistent``. At least I was consistent. 
 * :release:`1.0.0 <2014-03-18>`
 * :feature:`-` Model for notifications that could be extended but doesn't need to be.
 * :feature:`-` Settings dict for configuring notification types.

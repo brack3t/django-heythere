@@ -41,7 +41,7 @@ in ``settings.py``. Here's the default settings:
 
     NOTIFICATIONS = {
         'DEFAULT': {
-            'persistant': True,  # stays until dismissed
+            'persistent': True,  # stays until dismissed
             'send_as_email': False,  # send as email
             'headline_template': '{{headline}}',  # Django template for headline
             'body_template': '{{body}}',  # Django template for body
@@ -54,7 +54,7 @@ notification is another key in the ``NOTIFICATIONS`` dictionary.
 
 .. _options:
 
-- ``persistant``: Whether or not notifications are marked as inactive once emailed to a user.
+- ``persistent``: Whether or not notifications are marked as inactive once emailed to a user.
 - ``send_as_email``: Whether or not to send this kind of notification as an email.
 - ``headline_template``: A Django template string that'll be rendered with a context dictionary for the headline.
 - ``body_template``: A Django template string that'll be rendered with a context dictionary for the body.
