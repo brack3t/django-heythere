@@ -14,12 +14,6 @@ users, either, if that's not your thing.
 
 Currently tested against Python 2.6, 2.7, and 3.3 with Django 1.5, 1.6, and 1.7.
 
-.. warning:: 
-   This software is currently in beta and may not work exactly how 
-   it should. All tests are passing and test coverage is high, but I take no
-   responsibility for how you use this software or any effect it might have
-   on your systems.
-
 .. _installation:
 
 Installation
@@ -117,6 +111,12 @@ same for whichever notifications have been selected.
 There is also a **management command** to send all unsent notifications (again,
 ignoring those whose notification type doesn't allow them to be sent). You can
 run this command with ``./manage.py send_unsent_notifications``.
+
+
+`Changelog`_
+============
+
+.. _Changelog: changelog.html
 
 
 Indices and tables

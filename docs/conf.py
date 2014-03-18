@@ -35,6 +35,9 @@ extensions = [
     'releases'
 ]
 
+releases_issue_uri = "https://github.com/brack3t/django-heythere/issues/%s"
+releases_release_uri = "https://github.com/brack3t/django-heythere/tree/%s"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
