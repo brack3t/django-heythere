@@ -87,11 +87,11 @@ Along with those configuration options, the ``Notificiation`` object has a few s
 
 ``Notification.objects.clear_all(<user>)`` marks all unread notifications for a user as having been read.
 
-.. _send_all_new:
+.. _send_all_unsent:
 
-**send_all_new**
+**send_all_unsent**
 
-``Notification.objects.send_all_new()`` finds all unread notifications that are allowed to be sent as emails and...sends them.
+``Notification.objects.send_all_unsent()`` finds all unread notifications that are allowed to be sent as emails and...sends them.
 If they're marked as being non-persistent, they'll be marked as no longer active, too.
 
 .. _read:

@@ -10,6 +10,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         note_count = Notification.objects.all_unsent().count()
-        Notification.objects.send_all_new()
+        Notification.objects.send_all_unsent()
         self.stdout.write(
             u'Successfully sent {0} notifications'.format(note_count))

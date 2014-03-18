@@ -1,0 +1,23 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst|escape }}</a>
+&rsaquo; {% trans 'Send all unsent notifications' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<p>{% blocktrans %}Are you sure you want to send all of the following notifications?{% endblocktrans %}</p>
+
+<ul>{{ notifications|unordered_list }}</ul>
+
+<form action='' method='POST'>
+    {% csrf_token %}
+    <input type='hidden' name='post' value='yes'>
+    <input type='submit' value="{% trans "Yes, I'm sure" %}">
+</form>
+{% endblock %}

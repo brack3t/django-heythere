@@ -95,7 +95,7 @@ class TestNotificationModel(test.TestCase):
         self._create_notification('TEMPORARY')
         self._create_notification('TEMPORARY')
 
-        Notification.objects.send_all_new()
+        Notification.objects.send_all_unsent()
         self.assertEqual(Notification.objects.all_unsent().count(), 0)
         self.assertEqual(len(mail.outbox), 5)
 

@@ -56,7 +56,7 @@ class NotificationManager(models.Manager):
         for notification in notifications:
             notification.read()
 
-    def send_all_new(self, fail_silently=False):
+    def send_all_unsent(self, fail_silently=False):
         notifications = self.model.objects.all_unsent()
         emails = [note.mail_tuple for note in
                   notifications if note.send_as_email]
