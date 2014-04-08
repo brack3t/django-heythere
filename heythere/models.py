@@ -89,7 +89,8 @@ class Notification(models.Model):
     The `headline` and `body` fields should be filled in
     using the template keys in the chosen notification type.
     """
-    timestamp = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     sent_at = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(django_settings.AUTH_USER_MODEL,
@@ -107,10 +108,10 @@ class Notification(models.Model):
             get_notification_types, list)()
 
     class Meta:
-        ordering = ['-timestamp']
+        ordering = ['-created']
 
     def __unicode__(self):
-        return u'{0.timestamp:%Y/%m/%d %H:%M} - {0.user}'.format(self)
+        return u'{0.created:%Y/%m/%d %H:%M} - {0.user}'.format(self)
 
     def save(self, *args, **kwargs):
         if not hasattr(self.headline_dict, 'keys'):
