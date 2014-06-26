@@ -7,6 +7,7 @@ from django.core.mail import send_mail, send_mass_mail
 from django.db import models
 from django.utils.functional import lazy
 from django.utils.timezone import now
+from django.template import loader
 
 from .settings import get_notifications
 from .utils import render
@@ -120,14 +121,28 @@ class Notification(models.Model):
             headline_dict = self.headline_dict
             body_dict = self.body_dict
 
-        self.headline = render(
-            self.notification_dict['headline_template'],
-            headline_dict
-        )
-        self.body = render(
-            self.notification_dict['body_template'],
-            body_dict
-        )
+        if 'headline_template_name' in self.notification_dict:
+            self.headline = loader.render_to_string(
+                self.notification_dict['headline_template_name'],
+                headline_dict
+            ).strip()
+        else:
+            self.headline = render(
+                self.notification_dict['headline_template'],
+                headline_dict
+            )
+
+        if 'body_template_name' in self.notification_dict:
+            self.body = loader.render_to_string(
+                self.notification_dict['body_template_name'],
+                body_dict
+            ).strip()
+        else:
+            self.body = render(
+                self.notification_dict['body_template'],
+                body_dict
+            )
+
         if not self.persistent and self.sent_at:
             self.active = False
         super(Notification, self).save(*args, **kwargs)
