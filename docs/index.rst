@@ -22,7 +22,7 @@ Installation
 1. ``pip install django-heythere`` or download from
    `github <https://github.com/brack3t/django-heythere>`_ and run
    ``python setup.py install``.
-2. Add ``'heythere'`` to your ``INSTALLED_PACKAGES`` in ``settings.py``.
+2. Add ``'heythere'`` to your ``INSTALLED_APPS`` in ``settings.py``.
 3. **OPTIONAL** Set up your special `configuration`_.
 4. ``python manage.py syncdb``
 5. The rest is up to you!
