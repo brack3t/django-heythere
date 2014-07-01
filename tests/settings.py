@@ -89,5 +89,12 @@ NOTIFICATIONS = {
         'send_as_email': True,
         'headline_template': 'My headline: {{headline}}',
         'body_template': 'My body: {{body}}',
+    },
+    'TEMPLATE_FILES': {
+        'persistent': True,
+        'send_onsite': False,
+        'send_as_email': True,
+        'headline_template_name': 'headline.txt',
+        'body_template_name': 'body.txt',
     }
 }

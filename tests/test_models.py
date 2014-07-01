@@ -107,3 +107,8 @@ class TestNotificationModel(test.TestCase):
                 'notification_type')[0].get_choices())
         notification = self._create_notification('CUSTOM_USER')
         self.assertIn('My body:', notification.body)
+
+    def test_using_template_files(self):
+        notification = self._create_notification('TEMPLATE_FILES')
+        self.assertIn('My headline from file:', notification.headline)
+        self.assertIn('My body from file:', notification.body)

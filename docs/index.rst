@@ -43,6 +43,8 @@ in ``settings.py``. Here's the default settings:
         'DEFAULT': {
             'persistent': True,  # stays until dismissed
             'send_as_email': False,  # send as email
+            'headline_template_name': 'headline.txt',  # Django template file for headline
+            'body_template_name': 'body.txt',  # Django template file for body
             'headline_template': '{{headline}}',  # Django template for headline
             'body_template': '{{body}}',  # Django template for body
             'email_field': 'email'  # Assume field named 'email' is user's email
@@ -56,8 +58,10 @@ notification is another key in the ``NOTIFICATIONS`` dictionary.
 
 - ``persistent``: Whether or not notifications are marked as inactive once emailed to a user.
 - ``send_as_email``: Whether or not to send this kind of notification as an email.
-- ``headline_template``: A Django template string that'll be rendered with a context dictionary for the headline.
-- ``body_template``: A Django template string that'll be rendered with a context dictionary for the body.
+- ``headline_template_name``: A Django template file that'll be rendered with a context dictionary for the headline.
+- ``body_template_name``: A Django template file that'll be rendered with a context dictionary for the body.
+- ``headline_template``: A Django template string that'll be rendered with a context dictionary for the headline. Only used if ``headline_template_name`` is not provided.
+- ``body_template``: A Django template string that'll be rendered with a context dictionary for the body. Only used if ``body_template_name`` is not provided.
 - ``email_field``: The field on your user model that holds the user's email address.
 
 .. _methods:
