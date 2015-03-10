@@ -15,6 +15,7 @@ from .models import Notification, get_notification_types
 class NotificationForm(forms.ModelForm):
     class Meta:
         model = Notification
+        fields = {'notification_type', 'user', 'headline', 'body', 'headline_dict', 'body_dict', 'active', 'sent_at'}
 
     def __init__(self, *args, **kwargs):
         super(NotificationForm, self).__init__(*args, **kwargs)
