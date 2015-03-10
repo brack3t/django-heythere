@@ -35,7 +35,7 @@ class NotificationQuerySet(models.query.QuerySet):
 
 
 class NotificationManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return NotificationQuerySet(self.model, using=self._db)
 
     def create_notification(self, user, notification_type, headline, body):
@@ -49,7 +49,7 @@ class NotificationManager(models.Manager):
         return notification
 
     def for_user(self, user):
-        return self.get_query_set().filter(user=user)
+        return self.get_queryset().filter(user=user)
 
     def clear_all(self, user):
         notifications = self.model.objects.select_for_update().for_user(user)
@@ -67,19 +67,19 @@ class NotificationManager(models.Manager):
             note.save()
 
     def all_unsent(self):
-        return self.get_query_set().unsent()
+        return self.get_queryset().unsent()
 
     def unread(self, user):
-        return self.get_query_set().for_user(user).unread()
+        return self.get_queryset().for_user(user).unread()
 
     def read(self, user):
-        return self.get_query_set().for_user(user).read()
+        return self.get_queryset().for_user(user).read()
 
     def unsent(self, user):
-        return self.get_query_set().for_user(user).unsent()
+        return self.get_queryset().for_user(user).unsent()
 
     def sent(self, user):
-        return self.get_query_set().for_user(user).sent()
+        return self.get_queryset().for_user(user).sent()
 
 
 class Notification(models.Model):
@@ -169,3 +169,4 @@ class Notification(models.Model):
             send_mail(*self.mail_tuple, fail_silently=fail_silently)
             self.sent_at = now()
             self.save()
+
