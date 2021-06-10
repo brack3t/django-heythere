@@ -1,4 +1,4 @@
-Django==1.6.2
+Django==2.2.24
 cov-core==1.7
 coverage==3.7.1
 py==1.4.20
